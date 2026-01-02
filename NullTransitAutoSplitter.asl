@@ -22,6 +22,7 @@ init {
 
 	string logPath = "";
 	var platform = Environment.OSVersion.Platform;
+	print("OS Version = " + Environment.OSVersion);
 	// Windows path to logfile
 	if (platform == PlatformID.Win32S || platform == PlatformID.Win32Windows || platform == PlatformID.Win32NT || platform == PlatformID.WinCE)
 	{
@@ -32,11 +33,10 @@ init {
 	// Mac path to logfile
 	else if (platform == PlatformID.MacOSX)
 	{
-		print("Platform = Windows");
+		print("Platform = MacOSX");
 		logPath = "~/Library/Logs/Company Name/Product Name/Player.log";
 	}
 	print("Logfile path = " + logPath);
-	print("OS Version = " + Environment.OSVersion);
 
 	try { // Wipe the log file to clear out messages from last time
 		FileStream fs = new FileStream(logPath, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
@@ -45,7 +45,7 @@ init {
 	} catch {
 		print("Logpath not found: " + logPath);
 	} // May fail if file doesn't exist.
-	vars.reader = new StreamReader(new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)); 
+	vars.reader = new StreamReader(new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
 	// Constants for possible event names
 	vars.outer_bloom = "Outer Bloom";
