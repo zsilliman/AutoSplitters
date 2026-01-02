@@ -20,8 +20,23 @@ init {
 
 	refreshRate = 30;
 
-	string logPath = "%USERPROFILE%\\AppData\\LocalLow\\HalfwayGames\\NullTransit\\Player.log";
-	logPath = Environment.ExpandEnvironmentVariables(logPath);
+	string logPath = "";
+	var platform = Environment.OSVersion.Platform;
+	// Windows path to logfile
+	if (platform == PlatformID.Win32S || platform == PlatformID.Win32Windows || platform == PlatformID.Win32NT || platform == PlatformID.WinCE)
+	{
+		print("Platform = Windows");
+		logPath = "%USERPROFILE%\\AppData\\LocalLow\\HalfwayGames\\NullTransit\\Player.log";
+		logPath = Environment.ExpandEnvironmentVariables(logPath);
+	}	
+	// Mac path to logfile
+	else if (platform == PlatformID.MacOSX)
+	{
+		print("Platform = Windows");
+		logPath = "~/Library/Logs/Company Name/Product Name/Player.log";
+	}
+	print("Logfile path = " + logPath);
+	print("OS Version = " + Environment.OSVersion);
 
 	try { // Wipe the log file to clear out messages from last time
 		FileStream fs = new FileStream(logPath, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
@@ -30,7 +45,7 @@ init {
 	} catch {
 		print("Logpath not found: " + logPath);
 	} // May fail if file doesn't exist.
-	vars.reader = new StreamReader(new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+	vars.reader = new StreamReader(new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)); 
 
 	// Constants for possible event names
 	vars.outer_bloom = "Outer Bloom";
@@ -129,13 +144,11 @@ update {
 	string ResetIndicatorA = "ProgressionIndex = 0";
 	string ResetIndicatorB = "Loading WorldRecipeStore save data.";
 
-	var line = "";
-	var lines = "";
-	while (line != null)
+	string line;
+	string lines = "";
+	while ((line = vars.reader.ReadLine()) != null)
 	{
-		line = vars.reader.ReadLine();
-		if (line != null)
-			lines += line + "\n";
+		lines += line + "\n";
 	}
 
 	// If no line was read, don't run any other blocks.
